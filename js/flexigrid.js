@@ -20,7 +20,7 @@
 			url: false, //URL if using data from AJAX
 			method: 'POST', //data sending method
 			dataType: 'xml', //type of data for AJAX, either xml or json
-			errormsg: 'Connection Error',
+			errormsg: 'Erro de conexão',
 			usepager: false,
 			nowrap: true,
 			page: 1, //current page
@@ -30,15 +30,15 @@
 			rpOptions: [10, 15, 20, 30, 50], //allowed per-page values 
 			title: false,
 			idProperty: 'id',
-			pagestat: 'Displaying {from} to {to} of {total} items',
-			pagetext: 'Page',
-			outof: 'of',
+			pagestat: 'Exibindo {from} a {to} de {total} itens',
+			pagetext: 'Página',
+			outof: 'de',
 			findtext: 'Find',
 			params: [], //allow optional parameters to be passed around
-			procmsg: 'Processing, please wait ...',
+			procmsg: 'Processando, aguarde...',
 			query: '',
 			qtype: '',
-			nomsg: 'No items',
+			nomsg: 'Nenhum item',
 			minColToggle: 1, //minimum allowed column to be hidden
 			showToggleBtn: true, //show or hide column toggle popup
 			hideOnSubmit: true,
@@ -361,10 +361,34 @@
 									// If the json elements aren't named (which is typical), use numeric order
 									if (typeof row.cell[idx] != "undefined") {
 										td.innerHTML = (row.cell[idx] != null) ? row.cell[idx] : '';//null-check for Opera-browser
+									
 									} else {
-										td.innerHTML = row.cell[p.colModel[idx].name];
+										fName = p.colModel[idx].name;
+										if (fName.search('\\.') == -1) {
+											td.innerHTML = row.cell[fName];
+										
+										} else {
+											try {
+												fNames = fName.split('.');
+												r = "row.cell";
+												for (i = 0; i < fNames.length; i++) {
+													r += "['" + fNames[i] + "']";
+												    
+												}
+											
+												td.innerHTML = eval(r);
+											
+											} catch (e) {
+												td.innerHTML = '';
+											
+											}
+										
+										
+										}
+									
 									}
 								}
+
 								$(td).attr('abbr', $(this).attr('abbr'));
 								$(tr).append(td);
 								td = null;
@@ -1255,3 +1279,5 @@
     return this.each( function() { if (this.grid&&this.p.searchitems) this.grid.doSearch(); });
   }; //end flexSearch
 })(jQuery);
+
+
